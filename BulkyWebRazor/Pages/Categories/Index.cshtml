@@ -15,7 +15,7 @@
 			}
 		</div>
 		<div class="col-6 text-end">
-			<a asp-controller="Category" asp-action="Create" class="btn btn-primary">
+			<a asp-page="/categories/Create" class="btn btn-primary">
 				<i class="bi bi-plus-circle"></i> Create New Category
 			</a>
 		</div>
@@ -35,7 +35,7 @@
 		</thead>
 
 		<tbody>
-			@foreach (var obj in Model.OrderByDescending(o => o.DisplayOrder))
+			@foreach (var obj in Model.objCategoryList.OrderByDescending(o => o.DisplayOrder))
 			{
 				<tr>
 					<td>
@@ -46,10 +46,10 @@
 					</td>
 					<td>
 						<div role="group" class="w-75 btn-group ">
-							<a asp-controller="Category" asp-action="Edit" asp-route-Id="@obj.Id" class="btn btn-primary">
+							<a asp-page="/categories/edit" asp-route-Id="@obj.Id" class="btn btn-primary">
 								<i class="bi bi-pencil-square"></i> Edit
 							</a>
-							<a asp-controller="Category" asp-action="Delete" asp-route-Id="@obj.Id" class="btn btn-danger">
+							<a asp-page="/categories/delete/@obj.Id" class="btn btn-danger">
 								<i class="bi bi-trash-fill"></i> Delete
 							</a>
 
