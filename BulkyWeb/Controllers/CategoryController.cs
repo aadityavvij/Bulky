@@ -1,17 +1,19 @@
 ﻿using Bulky.DataAccess.Data;
+using Bulky.DataAccess.Repository.IRepository;
 using Bulky.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BulkyWeb.Controllers
 {
-	public class CategoryController(ApplicationDbContext db) : Controller
+	public class CategoryController(ICategoryRepository db) : Controller
     {
-        private readonly ApplicationDbContext _db = db;
+        //private readonly ApplicationDbContext _db = db;
+		private readonly ICategoryRepository _categoryRepo = db;
 
         public IActionResult Index()
         {
-            List<Category> objCategoryList = _db.Category.ToList();
+			List<Category> objCategoryList = (List<Category>)_categoryRepo.GetAll();
             return View(objCategoryList);
         }
 		public IActionResult Create()
@@ -27,8 +29,8 @@ namespace BulkyWeb.Controllers
 			}
 			if (ModelState.IsValid)
 			{
-				_db.Category.Add(obj);
-				_db.SaveChanges();
+				_categoryRepo.Add(obj);
+				_categoryRepo.Save();
 				TempData["SuccessMessage"] = "Submission successful";
 				return RedirectToAction("Index"); // Redirect to the desired action after submission
 			}
@@ -43,7 +45,7 @@ namespace BulkyWeb.Controllers
 			{
 				return View(id);
 			}
-			Category? cat = _db.Category.Find(id);
+			Category? cat = _categoryRepo.Get(u=>u.Id==id);
 			if(cat == null)
 			{
 				return View(id);
@@ -59,8 +61,8 @@ namespace BulkyWeb.Controllers
 			}
 			if (ModelState.IsValid)
 			{
-				_db.Category.Update(obj);
-				_db.SaveChanges();
+				_categoryRepo.Update(obj);
+				_categoryRepo.Save();
 				TempData["SuccessMessage"] = "Field Edited Successfully!";
 				return RedirectToAction("Index");
 			}
@@ -75,7 +77,7 @@ namespace BulkyWeb.Controllers
 			{
 				return View(id);
 			}
-			Category? cat = _db.Category.Find(id);
+			Category? cat = _categoryRepo.Get(u=>u.Id==id);
 			if (cat == null)
 			{
 				return View(id);
@@ -90,15 +92,15 @@ namespace BulkyWeb.Controllers
 				return NotFound();
 			}
 
-			Category? cat = _db.Category.Find(id);
+			Category? cat = _categoryRepo.Get(u => u.Id == id);
 
 			if (cat == null)
 			{
 				return NotFound();
 			}
 
-			_db.Category.Remove(cat);
-			_db.SaveChanges();
+			_categoryRepo.Remove(cat);
+			_categoryRepo.Save();
 			TempData["DeleteMessage"] = "Field Deleted Successfully!";
 			return RedirectToAction("Index");
 		}
